@@ -1,0 +1,321 @@
+<!--
+/**
+* @category    Nooku
+* @package     Nooku_Desktop
+* @subpackage  View
+* @copyright   Copyright (C) 2011 Timble CVBA. (http://www.timble.net).
+* @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+* @link        http://www.nooku.org
+*/
+-->
+
+<link rel="stylesheet" href="connections.css">
+
+<script type="text/javascript">
+    if(localStorage['close-sidebar'] && localStorage['close-sidebar'] == 'true') document.body.addClass('close-sidebar');
+	document.body.addClass.delay(300, document.body, ['sidebar']);
+	
+	$('toggle-sidebar').addEvent('click', function(){
+	    document.body.toggleClass('close-sidebar');
+	    localStorage['close-sidebar'] = document.body.hasClass('close-sidebar') ? true : false;
+	});
+
+	var db = Titanium.Database.open('nooku_desktop'), model = Factory.get('model.connections'), list,
+		list = new Element('ul').inject(this), wrap = new Element('div').inject(this), render = function(){
+		
+		Factory.get('model.menu').setMenu();
+
+        if(model.getTotal() < 1) {
+            db.execute(
+                "INSERT INTO connections (id, url, title, username, password) VALUES(?, ?, ?, ?, ?)",
+                1, 'http://demo.nooku.org/administrator/', 'Nooku Demo', 'demo', 'demo'
+            );
+            localStorage.selected = '1';
+        }
+        
+        if(!localStorage.selected) {
+            localStorage.selected = model.getList()[0].id;
+        }
+
+			list.innerHTML = '';
+			wrap.innerHTML = '';
+	
+			var createListElement = function(item){
+				var element = new Element('li', {
+					'data-id': item.id,
+					'class': 'connection',
+					draggable: false,
+					title: 'Double-click to use this connection',
+					events: {
+						dblclick: function(){
+							if(document.body.hasClass('selected')) return;
+							
+							localStorage['connection-history-'+item.id] = 'void';
+							
+							var iframe = document.querySelector('iframe');
+							iframe.src = 'app://index.html?'+Object.toQueryString({
+								view: 'connection',
+								layout: 'default',
+								id: item.id
+							});
+						},
+						click: function(event){
+							if(event) event.stop();
+							
+							if(document.body.hasClass('selected')) return;
+							
+							if(!this.hasClass('selected')) {
+								//Odd stuff happens if we do this
+								//this.fireEvent('dblclick');
+								
+								var iframe = document.querySelector('iframe');
+								iframe.src = 'app://index.html?'+Object.toQueryString({
+									view: 'connection',
+									layout: 'default',
+									id: item.id
+								});
+							}
+						
+							this.getSiblings('.selected').removeClass('selected');
+							this.addClass('selected');
+							
+							document.getElementById('content')
+								.set('data-id', item.id);
+
+                            var model = Factory.get('model.connections');
+                            item = model.id(item.id).getItem();
+
+							document.getElementById('title').set('value', item.title);
+							document.getElementById('url').set('value', item.url);
+							document.getElementById('username').set('value', item.username);
+							document.getElementById('password').set('value', item.password);
+
+							localStorage.selected = item.id;
+						}
+					}
+				})
+				.grab(new Element('header').adopt([
+				    //new Element('img', {src: 'app://icons/default.png'}),
+				    new Element('h4', {text: item.title}),
+				    new Element('h5', {text: item.url}),
+				    new Element('span', {'class': 'nipple', text: '▶', events:{click: function(event){
+				        event.stop();
+				        var parent = this.getParent('li');
+                        parent.toggleClass('open');
+                        localStorage['connection-toggle-'+item.id] = parent.hasClass('open') ? 'yes' : 'no';
+				    }}})
+				]));
+				
+				if(item.sites.length > 0) {
+				    element.addClass('multisite toggle');
+				    if(localStorage['connection-toggle-'+item.id] == 'yes') element.addClass('open');
+				    var list = new Element('ul');
+				    item.sites.each(function(site, i){
+				        list.adopt([
+				            new Element('li', {
+				                'class': 'site'+(localStorage['connection-site-'+item.id] == site.name ? ' selected' : ''),
+				        		draggable: false,
+				        		title: 'Click to switch to this site',
+				        		'data-name': site.name,
+				        		events: {
+				        		    click: function(){
+				        		        this.getSiblings('.selected').removeClass('selected');
+
+                                        this.addClass('selected');
+                                        localStorage['connection-site-'+item.id] = site.name;
+                                        Factory.get('model.menu').setMenu();
+                                        
+                                        var parent = this.getParent('li');
+                                        if(parent.hasClass('selected')) {
+                                            var iframe = document.querySelector('iframe');
+                                            if(iframe.contentDocument) {
+                                                //iframe.contentWindow.location.reload();
+                                                var iframe = iframe.contentDocument.querySelector('iframe'), win = iframe.contentWindow;
+                                                win.location.href = win.location.href.toURI().setData({site: site.name}, true);
+                                            }
+                                        }
+				        		    }
+				        		}
+				        	})
+				        	.grab(new Element('header').adopt(new Element('h4', {text: site.title}), 'bottom'))
+				        ]);
+				    });
+				    element.adopt(new Element('footer').adopt(list));
+				}
+				
+				return element;
+			};
+			model.getList().each(function(item){
+				this.grab(
+					createListElement(item)
+				);
+			}, list);
+			
+			var selected = this.getElement('ul li[data-id='+localStorage.selected+']');
+			if(selected) {
+				selected.fireEvent('click');
+			}
+			
+			wrap.grab(
+				new Element('div', {id: 'toolbar'}).adopt([
+					new Element('button', {
+						id: 'add',
+						events: {
+							click: function(event){
+								event.stop();
+							    if(document.body.hasClass('selected')) return event;
+
+								var db = Titanium.Database.open('nooku_desktop'), model = Factory.get('model.connections'), total = model.getTotal();
+								//Make sure to avoid NaN
+								if(!(total > 0)) total = 0;
+								
+								var title = 'Untitled Connection', url = '', username = '', password = '';
+	                            if(Titanium.UI.Clipboard.hasText() && !Titanium.UI.Clipboard.getText().trim().match(/\n/)) {
+	                                uri = Titanium.UI.Clipboard.getText().toURI();
+	                                // If the parsed URI got no domain, then it's invalid
+                                    if(uri.get('host')) {
+                                        if(uri.get('user')) username = uri.get('user');
+                                        if(uri.get('password')) password = uri.get('password');
+
+                                        url = uri.set('file', '').set('query', '').set('fragment', '').set('user', '').set('password', '').toString();
+                                        
+                                        host = uri.get('host').split('.');
+                                        if(host.length > 1) host.pop();
+                                        if(host[0] == 'www') host.shift();
+                                        host.reverse();
+
+                                        title = host.join(' ').capitalize().trim();
+                                        
+                                        directory = uri.get('directory').split('/');
+                                        directory = directory.filter(function(key){
+                                            if(key.trim() && key != 'administrator' && !title.test(new RegExp(key, 'i'))) return key;
+                                        });
+                                        
+                                        if(directory.length) {
+                                            title += ' ' + directory.join(' ').humanize();
+                                        }
+                                    }
+	                            }
+								
+								db.execute(
+								    "INSERT INTO connections (id, url, title, username, password) VALUES(?, ?, ?, ?, ?)",
+								    total+1, url, title, username, password
+								);
+								var row = model.id(total+1).getItem(),
+									item = createListElement(row);
+						
+								list.grab(item);
+								
+								item.getSiblings('.selected').removeClass('selected');
+								item.addClass('selected new');
+								
+								document.getElementById('content')
+									.set('data-id', row.id);
+	
+								document.getElementById('title').set('value', title);
+								document.getElementById('url').set('value', url);
+								document.getElementById('username').set('value', username);
+								document.getElementById('password').set('value', password);
+	
+								localStorage.selected = item.id;
+								
+								document.body.addClass('selected');//.addClass('close-sidebar');
+								
+								document.getElementById('title').select();
+								
+								Factory.get('model.menu').setMenu();
+								
+								db.close();
+							}
+						}
+					}),
+					new Element('button', {
+						id: 'edit',
+						events: {
+							click: function(event){
+								event.stop();
+								if(document.body.hasClass('selected')) return event;
+							
+								var model = Factory.get('model.connections'), selected = document.getElementById('view').getElement('ul .connection.selected');
+								if(!selected) return;
+								var row = model.id(selected.get('data-id')).getItem();
+								
+								document.body.addClass('selected');//.addClass('close-sidebar');
+								
+								document.getElementById('content')
+									.set('data-id', row.id)
+									.removeClass('hide');
+								
+								document.getElementById('title').set('value', row.title);
+								document.getElementById('url').set('value', row.url);
+								document.getElementById('username').set('value', row.username);
+								document.getElementById('password').set('value', row.password);
+								
+								document.getElementById('title').select();
+							}
+						}
+					}),
+					new Element('button', {
+						id: 'delete',
+						events: {
+							click: function(event){
+								if(document.body.hasClass('selected')) return event;
+								
+								var selected = document.getElementById('view').getElement('ul .connection.selected');
+								
+								if(!selected) return event;
+								
+								Factory.get('model.connections').id(selected.get('data-id')).remove();
+								selected.dispose();
+								
+								document.getElementById('content')
+									.removeAttribute('data-id');
+								
+								document.getElementById('title').set('value', '');
+								document.getElementById('url').set('value', '');
+								
+								var iframe = document.querySelector('iframe');
+								iframe.src = '';
+								
+								localStorage.selected = '';
+								
+								event.stop();
+							}
+						}
+					})
+				])
+			);
+	}.bind(this);
+	
+	var setMaxWidthOnView = function(){
+		if(list) {
+			list.setStyle('max-width', window.getWidth());
+		}
+	};
+	window.addEvent('resize', setMaxWidthOnView);
+	window.addEvent('focus', setMaxWidthOnView);
+	$('view').getElement('.back').addEvent('click', function(event){
+		event.stop();
+	});
+	window.addEventListener('keydown', function(event){
+		if(event.which != 8) return event;
+		
+		if(document.body.hasClass('selected')) return event;
+		
+		var selected = document.getElementById('view').getElement('ul .connection.selected');
+		
+		if(!selected) return event;
+		
+		Factory.get('model.connections').id(selected.get('data-id')).remove();
+		selected.dispose();
+		
+		document.getElementById('content')
+			.removeAttribute('data-id');
+		
+		document.getElementById('title').set('value', '');
+		document.getElementById('url').set('value', '');
+		
+		event.stop();
+	});
+	render.call(this);
+</script>

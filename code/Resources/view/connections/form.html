@@ -1,0 +1,120 @@
+<!--
+/**
+* @category    Nooku
+* @package     Nooku_Desktop
+* @subpackage  View
+* @copyright   Copyright (C) 2011 Timble CVBA. (http://www.timble.net).
+* @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+* @link        http://www.nooku.org
+*/
+-->
+
+<link rel="stylesheet" href="form.css">
+
+<script type="text/javascript">
+	var model = Factory.get('model.connections');
+	
+	var save = function(column){
+		var content = $('content');
+		if(content.get('data-id') && content.get('data-id') < 1) return this;
+		model.id(content.get('data-id')).save(column.get('name'), column.get('value'));
+	}, flip = function(){
+		document.body.removeClass('selected');//.removeClass('close-sidebar');
+		Titanium.UI.getCurrentWindow().setDocumentEdited(false);
+	};
+	this.getElement('#save').addEvent('click', function(event){
+		event.stop();
+		
+		var title = $('title'), url = $('url');
+		
+		//Do some basic validation
+		if(!url.get('value').trim()) {
+		    alert('Connections require the URL to be specified!');
+		    url.select();
+		    return event;
+		}
+		if(!title.get('value').trim()) {
+		    title.set('value', 'Untitled Connection');
+		}
+		
+		$$(title, url, '#username', '#password').each(save);
+		var id = document.getElementById('content').get('data-id'), row = document.getElement('.front [data-id='+id+']');
+		
+		var iframe = document.querySelector('iframe');
+		(function(){
+			iframe.src = 'app://index.html?'+Object.toQueryString({
+				view: 'connection',
+				layout: 'default',
+				id: id
+			});
+		}).delay(row.hasClass('new') ? 0 : 600);
+		
+		row.removeClass('new');
+		row.getElement('h4').set('text', title.get('value'));
+		row.getElement('h5').set('text', url.get('value'));
+		
+		flip();
+	});
+	this.getElement('#cancel').addEvent('click', function(event){
+		event.stop();
+		
+		var url = $('url'), id = $('content').get('data-id'), row = document.getElement('.front [data-id='+id+']');
+		
+		if(row.hasClass('new')) {
+		    Factory.get('model.connections').id(id).remove();
+		    row.dispose();
+		    
+		    $('content').removeAttribute('data-id');
+		    
+		    document.getElementById('title').set('value', '');
+		    document.getElementById('url').set('value', '');
+		    document.getElementById('username').set('value', '');
+		    document.getElementById('password').set('value', '');
+		}
+		
+		flip();
+	});
+
+    this.getElements('input').each(function(input){
+        input.addEventListener('input', function(){
+            Titanium.UI.getCurrentWindow().setDocumentEdited(true);
+        });
+    });
+	
+	//Make sure to cancel when the window close
+	window.addEventListener('unload', function(){
+	    if(!document.body.hasClass('selected')) return event;
+
+	    $('cancel').fireEvent('click', new Event);
+	});
+</script>
+
+<section id="content">
+    <div class="wrap">
+    	<section class="connection-info">
+    		<div>
+    		    <!--<label for="title">Title</label>-->
+    		    <input type="text" id="title" name="title" placeholder="Untitled Connection">
+    		</div>
+    		<div>
+    		    <label for="url">Server</label>
+    		    <input type="url" id="url" name="url" placeholder="http://domain.com/administrator">
+    		</div>
+    		<h3>Optional:</h3>
+    		<div>
+    		    <label for="username">Username or E-Mail</label>
+    		    <input type="text" id="username" name="username">
+    		</div>
+    		
+    		<div>
+    		    <label for="password">Password</label>
+    		    <input type="password" id="password" name="password">
+    		</div>
+    		<div class="toolbar">
+    			<button id="cancel">Cancel</button>
+    			<button id="save" class="primary">Save</button>
+    		</div>
+    	</section>
+    </div>
+	<iframe frameborder="0" width="100%" height="100%"></iframe>
+</section>

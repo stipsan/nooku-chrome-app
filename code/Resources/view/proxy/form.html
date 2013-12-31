@@ -1,0 +1,30 @@
+<!--
+/**
+* @category    Nooku
+* @package     Nooku_Desktop
+* @subpackage  View
+* @copyright   Copyright (C) 2011 Timble CVBA. (http://www.timble.net).
+* @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+* @link        http://www.nooku.org
+*/
+-->
+
+<link rel="stylesheet" href="proxy.css" />
+<style type="text/css">
+	#status {
+		display: none;
+	}
+</style>
+<script type="text/javascript">
+	console.warn(this.getElementById('content'), arguments);
+	var model = Factory.get('model.proxies');
+	this.getElementById('proxy').set('value', model.getProxy())
+		.addEventListener('input', function(){
+			model.setProxy(this.value);
+		});
+</script>
+
+<section id="content">
+	<input id="proxy" type="text" placeholder="Set a proxy host name here&hellip;" />
+	<button id="check">Check Proxy</button>
+</section>

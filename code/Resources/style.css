@@ -1,0 +1,315 @@
+/**
+* @category    Nooku
+* @package     Nooku_Desktop
+* @subpackage  GUI
+* @copyright   Copyright (C) 2011 Timble CVBA. (http://www.timble.net).
+* @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+* @link        http://www.nooku.org
+*/
+
+body {
+    overflow: hidden;
+    font-family: 'Lucida Grande', sans-serif;
+        height:100%;
+        margin: 0;
+        border-width: 0;
+        padding-top: 0;
+        -webkit-box-sizing: border-box;
+                /* This sets the containing element up to use a box layout */
+        /*display: -webkit-box;
+        /* We want to layout our first container vertically *!/
+        -webkit-box-orient: vertical;
+        /* we want our child elements to stretch to fit the container *!/
+        -webkit-box-align:stretch;*/
+        /*background: -webkit-gradient(radial, 50% 50%, 8, 50% 50%, 578, from(#7F7F7F), to(rgba(127, 127, 127, 0)));*/
+}
+body.osx {
+    padding-top: 1px;
+}
+iframe {
+        position: absolute;
+        bottom: 0px;
+        -webkit-box-sizing: border-box;
+        padding-bottom: 22px;
+/*      padding-top: 20px;*/
+        /* content should take up 100% of the rest of the space */
+                /*-webkit-box-flex:1;
+                -webkit-box-sizing: content-box;*/
+}
+
+h1 {
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+::-webkit-scrollbar {
+        width: 6px;
+}
+ 
+::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+ 
+::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 10px;
+        border-radius: 10px;
+        background: #AAA;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+::-webkit-scrollbar-thumb:window-inactive {
+        background: #CCC; 
+}
+
+@-webkit-keyframes flip-from-left {
+        from {
+        -webkit-transform-origin: 0% 50%;
+        -webkit-transform: perspective(1000) rotateY(0deg) translate(0%, 0%);
+        }
+        to {
+        -webkit-transform-origin: 100% 50%;
+        -webkit-transform: perspective(1000) rotateY(180deg) translate(100%, 0%);
+        }
+}
+
+@-webkit-keyframes spinner {
+        from {
+                -webkit-transform: rotate(0deg);
+        }
+        8.32% {
+                -webkit-transform: rotate(0deg);
+        }
+        8.33% {
+                -webkit-transform: rotate(30deg);
+        }
+        16.65% {
+                -webkit-transform: rotate(30deg);
+        }
+        16.66% {
+                -webkit-transform: rotate(60deg);
+        }
+        24.99% {
+                -webkit-transform: rotate(60deg);
+        }
+        25% {
+                -webkit-transform: rotate(90deg);
+        }
+        33.32% {
+                -webkit-transform: rotate(90deg);
+        }
+        33.33% {
+                -webkit-transform: rotate(120deg);
+        }
+        41.65% {
+                -webkit-transform: rotate(120deg);
+        }
+        41.66% {
+                -webkit-transform: rotate(150deg);
+        }
+        49.99% {
+                -webkit-transform: rotate(150deg);
+        }
+        50% {
+                -webkit-transform: rotate(180deg);
+        }
+        58.32% {
+                -webkit-transform: rotate(180deg);
+        }
+        58.33% {
+                -webkit-transform: rotate(210deg);
+        }
+        66.65% {
+                -webkit-transform: rotate(210deg);
+        }
+        66.66% {
+                -webkit-transform: rotate(240deg);
+        }
+        74.99% {
+                -webkit-transform: rotate(240deg);
+        }
+        75% {
+                -webkit-transform: rotate(270deg);
+        }
+        83.32% {
+                -webkit-transform: rotate(270deg);
+        }
+        83.33% {
+                -webkit-transform: rotate(300deg);
+        }
+        91.65% {
+                -webkit-transform: rotate(300deg);
+        }
+        91.66% {
+                -webkit-transform: rotate(330deg);
+        }
+        99.99% {
+                -webkit-transform: rotate(330deg);
+        }
+        to {
+                -webkit-transform: rotate(360deg);
+        }
+}
+
+.activity.alpha {
+  position: relative;
+  width: 128px;
+  height: 128px;
+  float: left;
+  margin: 10px;
+  -webkit-border-radius: 100px;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-iteration-count: ;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-name: spinner;
+}
+.activity > * {
+  width: 10px;
+  width: 12.5%;
+  width: auto;
+  height: 30px;
+  height: 31.25%;
+  height: auto;
+  background: #000;
+  position: absolute;
+  top: 35px;
+  top: 37.5%;
+  top: 31.25%;
+  top: 20%;
+  bottom: 50%;
+  -webkit-transform-origin: center bottom;
+  left: 45px;
+  left: 42.75%;
+  left: 45%;
+  right: 45%;
+
+  border-radius: 20px;
+}
+.activity > *:nth-child(1) {
+        background: hsla(0, 0%, 0%, 0.6);
+        -webkit-transform:rotate(0deg) translate(0, -65%);
+}
+.activity > *:nth-child(2) {
+        background: hsla(0, 0%, 35%, 0.6);
+        -webkit-transform:rotate(30deg) translate(0, -65%);
+}
+.activity > *:nth-child(3) {
+        background: hsla(0, 0%, 35%, 0.6);
+        -webkit-transform:rotate(60deg) translate(0, -65%);
+}
+.activity > *:nth-child(4) {
+        background: hsla(0, 0%, 35%, 0.6);
+        -webkit-transform:rotate(90deg) translate(0, -65%);
+}
+.activity > *:nth-child(5) {
+        background: hsla(0, 0%, 35%, 0.6);
+        -webkit-transform:rotate(120deg) translate(0, -65%);
+}
+.activity > *:nth-child(6) {
+        background: hsla(0, 0%, 35%, 0.6);
+        -webkit-transform:rotate(150deg) translate(0, -65%);
+}
+.activity > *:nth-child(7) {
+        background: hsla(0, 0%, 35%, 0.6);
+        -webkit-transform:rotate(180deg) translate(0, -65%);
+}
+.activity > *:nth-child(8) {
+        background: hsla(0, 0%, 30%, 0.6);
+        -webkit-transform:rotate(210deg) translate(0, -65%);
+}
+.activity > *:nth-child(9) {
+        background: hsla(0, 0%, 25%, 0.6);
+        -webkit-transform:rotate(240deg) translate(0, -65%);
+}
+.activity > *:nth-child(10) {
+        background: hsla(0, 0%, 20%, 0.6);
+        -webkit-transform:rotate(270deg) translate(0, -65%);
+}
+.activity > *:nth-child(11) {
+        background: hsla(0, 0%, 15%, 0.6);
+        -webkit-transform:rotate(300deg) translate(0, -65%);
+}
+.activity > *:nth-child(12) {
+        background: hsla(0, 0%, 5%, 0.6);
+        -webkit-transform:rotate(330deg) translate(0, -65%);
+}
+
+/*.tiny {
+width: 16px;
+height: 16px;
+}*/
+
+
+#status {
+        -webkit-box-sizing: content-box;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 21px;
+        visibility: hidden;
+        border-top: solid 1px hsla(0, 0%, 0%, 0.32);
+        background: -webkit-gradient(linear, left top, left bottom, from(hsla(0, 0%, 100%, 0.13)), to(hsla(0, 0%, 0%, 0.13)));
+        -webkit-box-shadow: hsla(0, 0%, 100%, 0.3) 0 1px 0 inset;
+        padding-left: 300px;
+}
+body.sidebar #status {
+    -webkit-transition: padding-left 600ms ease-in-out;
+}
+#status .shadow {
+        float: left;
+        display: block;
+        color: transparent;
+        content: '.';
+        height: 21px;
+        width: 1px;
+        left: 0px;
+        bottom: 0;
+        position: relative;
+        -webkit-box-shadow: hsla(0, 0%, 32%, 0.5) -1px 0 0, hsla(0, 0%, 100%, 0.15) -1px 0 0 inset;
+}
+body.sidebar #status .shadow {
+    -webkit-transition: opacity 600ms ease-in-out;
+}
+.close-sidebar #status .shadow {
+        opacity: 0;
+}
+.close-sidebar #status {
+        padding-left: 0;
+}
+
+body.osx #status {
+        -webkit-border-bottom-left-radius: 5px;
+        -webkit-border-bottom-right-radius: 5px;
+}
+
+.activity {
+        /*-webkit-animation-name: none;*/
+        /*-webkit-animation-duration: 1s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;*/
+        /*background-position: center;*/
+        background-repeat: no-repeat;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC7mlDQ1BJQ0MgUHJvZmlsZQAAeAGFVM9rE0EU/jZuqdAiCFprDrJ4kCJJWatoRdQ2/RFiawzbH7ZFkGQzSdZuNuvuJrWliOTi0SreRe2hB/+AHnrwZC9KhVpFKN6rKGKhFy3xzW5MtqXqwM5+8943731vdt8ADXLSNPWABOQNx1KiEWlsfEJq/IgAjqIJQTQlVdvsTiQGQYNz+Xvn2HoPgVtWw3v7d7J3rZrStpoHhP1A4Eea2Sqw7xdxClkSAog836Epx3QI3+PY8uyPOU55eMG1Dys9xFkifEA1Lc5/TbhTzSXTQINIOJT1cVI+nNeLlNcdB2luZsbIEL1PkKa7zO6rYqGcTvYOkL2d9H5Os94+wiHCCxmtP0a4jZ71jNU/4mHhpObEhj0cGDX0+GAVtxqp+DXCFF8QTSeiVHHZLg3xmK79VvJKgnCQOMpkYYBzWkhP10xu+LqHBX0m1xOv4ndWUeF5jxNn3tTd70XaAq8wDh0MGgyaDUhQEEUEYZiwUECGPBoxNLJyPyOrBhuTezJ1JGq7dGJEsUF7Ntw9t1Gk3Tz+KCJxlEO1CJL8Qf4qr8lP5Xn5y1yw2Fb3lK2bmrry4DvF5Zm5Gh7X08jjc01efJXUdpNXR5aseXq8muwaP+xXlzHmgjWPxHOw+/EtX5XMlymMFMXjVfPqS4R1WjE3359sfzs94i7PLrXWc62JizdWm5dn/WpI++6qvJPmVflPXvXx/GfNxGPiKTEmdornIYmXxS7xkthLqwviYG3HCJ2VhinSbZH6JNVgYJq89S9dP1t4vUZ/DPVRlBnM0lSJ93/CKmQ0nbkOb/qP28f8F+T3iuefKAIvbODImbptU3HvEKFlpW5zrgIXv9F98LZua6N+OPwEWDyrFq1SNZ8gvAEcdod6HugpmNOWls05Uocsn5O66cpiUsxQ20NSUtcl12VLFrOZVWLpdtiZ0x1uHKE5QvfEp0plk/qv8RGw/bBS+fmsUtl+ThrWgZf6b8C8/UXAeIuJAAAACXBIWXMAAAsTAAALEwEAmpwYAAABw0lEQVQ4EXWTy0oCURjHZ0YroYiEMixCicIiCuyCELQJ8R1q3yO0jt6gF+gJWrls1VKoRRcqxS5IUNmmCKNIzOn3P81ManTg53c93/nOd0bLdV2rFcuyHN9Gz8EehHxfp3QIBsu27TjGDnLGcyaQK9LxdUEOJryYEW0F8DRhGTZN1LIiyDqnfiFVNAZvECxTgKpxiJH4RGQLMtirSFMAfR5dBUrkVLHVTQzsMKjIBqTQd5EHcARzsA/nMAU6+YIcXVMF+yBvayg4kxhrsARl2IYmsU+k4iGEDtLGSXiGU+L3nS+wSGAdgpfQAT74dY2Ub0vaOLIwDC5oWAUCd8g/i056cc5CN2jve5ifQdB0VaAOave/pWv0Qw+ogBO0p3ZYo6Dhmdm0turFk8pp9asDDUnPtQDT8AKX0IDONY5jhPwKUkOsqQ2hT3YIilAC3bMGFdCVoqAvsABjkAbNKx+mikvFG4wz1Ed0zUPJh6COZJ+A3j9BTpGcKroG39BQNIdrb7OmmwFd4wo0rAixB+QtpNkcxX6FMjRNAQL+GkDRpmOCmqriDpt0TXXxATr5dynPB68SdaLxoevLy8r/U8+8f9tf+xvsBP1xNVgWKAAAAABJRU5ErkJggg==');
+        background-size: 16px;
+        opacity: 0;
+        display: inline-block;
+        margin: 3px 2px 0;
+        position: relative;
+        top: -3px;
+        left: -3px;
+        height: 16px;
+        width: 16px;
+        -webkit-border-radius: 100px;
+        /*-webkit-transition: opacity 300ms ease-out;*/
+}
+
+.loading .activity {
+        -webkit-animation-name: spinner;
+        -webkit-animation-duration: 1s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-iteration-count: ;
+        -webkit-animation-timing-function: linear;
+        opacity: 1;
+        /*-webkit-transition: opacity 0ms;*/
+        /*-webkit-animation-name: spinner;*/
+        /*-webkit-animation-name: throbber;*/
+}

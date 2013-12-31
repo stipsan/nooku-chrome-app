@@ -1,0 +1,203 @@
+<!--
+/**
+* @category    Nooku
+* @package     Nooku_Desktop
+* @subpackage  View
+* @copyright   Copyright (C) 2011 Timble CVBA. (http://www.timble.net).
+* @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+* @link        http://www.nooku.org
+*/
+-->
+
+<link rel="stylesheet" href="connection.css">
+
+<script type="text/javascript">
+	var model = Factory.get('model.connections'),
+	    sites = Factory.get('model.sites'),
+	    item = model.getItem(), 
+	    self = this, 
+	    setSites = function(){
+	        var db = Titanium.Database.open('nooku_desktop'), item = model.getItem(), url = item.url.toURI();
+	        url.setData({
+	            option: 'com_sites',
+	            view: 'sites',
+	            format: 'json'
+	        });
+	        var request = new Request.JSON({url: url, onSuccess: function(response){
+	            sites.id(item.id).remove();
+	            Object.each(response, function(site){
+	                console.dir(site);
+	                ///*
+	                db.execute(
+	                    "INSERT INTO sites (id, name, title) VALUES(?, ?, ?)",
+	                    item.id, site.name, site.name.humanize()
+	                );
+	                //*/
+	            });
+	            
+	            //Update the menu
+	            Factory.get('model.menu').setMenu();
+	        }});
+	        request.get();
+	    },
+	    openFrame = function(){
+	        var item = model.getItem(), url = item.url.toURI(), site = localStorage['connection-site-'+item.id];
+	        
+	        if(site) url.setData({site: site});
+
+            if(localStorage['connection-history-'+item.id] && localStorage['connection-history-'+item.id].toURI().get('host') == url.get('host')) {
+                url = localStorage['connection-history-'+item.id];
+            }
+
+	        new Element('iframe', {
+	        	src: url,
+	        	frameborder: 0,
+	        	styles: {
+	        		border: 'none !important'
+	        	},
+	        	events: {
+	        	    load: function(){
+	        	        var item = model.getItem(), iframe = this, history = localStorage['connection-history-'+item.id], url = item.url.toURI(), win = {location:{href:history}};
+	        	        if(iframe) var win = iframe.contentWindow;
+	        	        var href = win.location.href.toURI(), data = href.getData();
+	        	        localStorage['connection-history-'+item.id] = href.get('host') != url.get('host') || (data.view && data.view == 'login') ? history : href;
+	        	    }
+	        	},
+	        	width: '100%',
+	        	height: '100%'
+	        }).inject(self, 'top');
+	        
+	        // 7.5 minute interval (because the default session lifetime is 15 minutes on Nooku Server) ajax request to keep the session alive
+	        var keepalive = new Request({url: item.url});
+	        keepalive.get.periodical(450000, keepalive);
+	    },
+	    attachUpdateTitle = function(){
+	    var iframe, updateTitle = (function(){
+	    	if(!iframe) iframe = document.getElement('iframe');
+	    	if(iframe && iframe.contentDocument) {
+	    		window.top.document.title = iframe.contentDocument.title;
+	    	}
+	    });
+
+	    var periodicalUpdateTitle = updateTitle.periodical(1000);
+	    window.top.addEventListener('blur', function(){
+	    	clearInterval(periodicalUpdateTitle);
+	    });
+	    window.top.addEventListener('focus', function(){
+	    	periodicalUpdateTitle = updateTitle.periodical(1000);
+	    });
+	};
+
+	//Validate the connection
+	var validate = new Request({
+	    url: item.url,
+	    //method: 'HEAD',
+	    method: 'GET',
+	    headers: {
+	        'X-Nooku-Desktop': '0.7'
+	    },
+	    onRequest: function(){
+	    	window.top.document.body.addClass('loading');
+	    },
+	    onTimeout: function(){
+	        window.top.document.body.removeClass('loading');
+	        new Element('h1', {
+	        	text: "Request timed out. Check that the url is correct."
+	        }).inject(self, 'top');
+	    },
+	    onFailure: function(request){
+	        if(request.status == 401) return this.fireEvent('success');
+	    
+	        if(request.status) {
+	            new Element('h1', {
+	            	text: request.status + ' ' + request.statusText
+	            }).inject(self, 'top');
+	        }
+	    },
+	    onSuccess: function(){
+    		var isNookuDesktop = this.getHeader('X-Nooku-Desktop'), 
+    			isNookuServer = this.getHeader('X-Nooku-Server');
+
+
+    		if(!isNookuDesktop && !isNookuServer) {
+    			new Element('h1', {
+    			    //@TODO might make the error message smarter
+    				text: "Failed to connect with this server because it's not running Nooku Server."
+    			}).inject(self, 'top');
+    			return false;
+    		}
+
+    		//Run check to see if Nooku Server connections got the "administrator" part to the url
+    		if(isNookuServer && !item.url.test(new RegExp('/administrator(|/)$'))) {
+    		    var uri = item.url.toURI(),
+    		        prepend = uri.get('directory');
+
+    		    //Check if prepend ends with a slash, if not then add it
+    		    if(!prepend.test(/\/$/)) {
+    		        prepend += '/';
+    		    }
+
+    		    //If the file part of the url contains a dot, it's likely a folder and we need to prepend it
+    		    if(uri.get('file').length && !uri.get('file').test(/\./)) {
+    		        prepend += uri.get('file')+'/';
+    		        uri.set('file', '');
+    		    }
+
+    		    item.url = uri.set('directory', prepend+'administrator/').toString();
+    		    model.save('url', item.url);
+    		    window.top.document.getElement('.front [data-id='+item.id+']').getElement('h5').set('text', item.url);
+    		}
+
+            console.group('cookie');
+            console.dir(this);
+            console.dir(this.xhr);
+            console.dir(this.xhr.getAllResponseHeaders());
+            console.dir(this.xhr.getResponseHeader('Set-Cookie'));
+            console.dir(this.xhr.getResponseHeader('X-Powered-By'));
+            console.dir(document.cookie.split(/; */));
+            console.groupEnd();
+
+    		if(item.username && item.password) {
+
+    			var authentication = new Request({
+    				url: item.url,
+    				headers: {
+    					Authorization: 'Basic '+ (item.username + ':' + item.password).toBase64(),
+    					'X-Nooku-Desktop': '0.7'
+    				},
+    				onRequest: function(){
+    					window.top.document.body.addClass('loading');
+    				},
+    				onComplete: function(){
+    					window.top.document.body.removeClass('loading');
+
+                        setSites();
+    					openFrame();    					
+    					attachUpdateTitle();
+    				}
+    			});
+
+    			authentication.get();
+
+    			return;
+    		}
+
+            setSites();
+    		openFrame();
+    		attachUpdateTitle();
+    	},
+    	onComplete: function(){
+    	    var cookie = this.xhr.getResponseHeader("Set-Cookie");
+    	    console.log(cookie);
+    	    window.top.document.body.removeClass('loading');
+    	}
+	});
+	validate.send();
+	
+	window.addEventListener('unload', function(){
+	    var item = model.getItem(), iframe = document.getElement('iframe'), history = localStorage['connection-history-'+item.id], url = item.url.toURI(), win = {location:{href:history}};
+	    if(iframe) var win = iframe.contentWindow;
+	    var href = win.location.href.toURI(), data = href.getData();
+	    localStorage['connection-history-'+item.id] = history == 'void' ? '' : (href.get('host') != url.get('host') || (data.view && data.view == 'login') ? history : href);
+	});
+</script>

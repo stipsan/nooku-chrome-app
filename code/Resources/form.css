@@ -1,0 +1,132 @@
+/**
+* @category    Nooku
+* @package     Nooku_Desktop
+* @subpackage  GUI
+* @copyright   Copyright (C) 2011 Timble CVBA. (http://www.timble.net).
+* @license     GNU GPLv3 <http://www.gnu.org/licenses/gpl.html>
+* @link        http://www.nooku.org
+*/
+
+#content {
+	-webkit-box-align: center;
+	-webkit-box-orient: vertical;
+	-webkit-box-pack: center;
+	display: -webkit-box !important;
+	height: 100%;
+}
+#content .wrap {
+    -webkit-box-align: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    -webkit-box-sizing: border-box;
+    background-color: #EEE;
+    bottom: 22px;
+    display: -webkit-box !important;
+    left: 0px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+body.osx #content .wrap {
+    top: 1px;
+}
+.connection-info {
+	position: relative;
+	-webkit-box-sizing: content-box;
+	width: 90%;
+	max-width: 460px;
+}
+
+.connection-info input {
+	font-family: inherit;
+}
+.connection-info input, #title:focus, #title:hover {
+    background-color: white;
+	display: block;
+	-webkit-border-radius: 3px;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: rgba(0, 0, 0, 0.386719) 0px 2px 4px inset, white 0 1px 0;
+	padding: 5px;
+	margin: 10px 0;
+	width: 100%;
+}
+#title::-webkit-input-placeholder {
+    color: currentcolor;
+}
+.connection-info input::-webkit-input-placeholder {
+    color: #7F7F7F;
+}
+
+.connection-info .toolbar {
+	text-align: right;
+}
+
+#title {
+	font-size: 32px;
+	font-weight: lighter;
+	color: #2C6FAA;
+	font-family: 'Helvetica Neue', 'Arial', sans-serif;
+	border-color: transparent;
+	-webkit-box-shadow: none;
+	background-color: transparent;
+}
+#title:not(:focus) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.connection-info label {
+    position: absolute;
+    left: -300px;
+    top: 50%;
+    margin-top: -0.6em;
+    bottom: 0;
+    width: 295px;
+    text-align: right;
+}
+.connection-info label::after {
+    content: ':';
+}
+
+.connection-info > * {
+    -webkit-box-sizing: border-box;
+    margin-left: 100px;
+    position: relative;
+}
+
+.connection-info button {
+	-webkit-appearance: none;
+	-webkit-border-radius: 4px;
+	-webkit-background-clip: border;
+	-webkit-background-origin: border;
+	margin: 0;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	font-weight: bold;
+	outline: none;
+	overflow: hidden;
+	position: relative;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+    text-shadow: rgba(255, 255, 255, .4) 0 1px 0;
+    padding: 4px 8px;
+    min-width: 68px;
+    height: 29px;
+    text-align: center;
+    background-color: hsl(0, 0%, 96%);
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(hsla(0, 0%, 100%, 0.2)), to(hsla(0, 0%, 0%, 0.2)));
+}
+.connection-info button:active {
+    background-color: #CCC;
+    -webkit-box-shadow: hsla(0, 0%, 0%, 0.5) 0px 1px 2px inset;
+}
+.connection-info button.primary {
+    border-color: #3887cc;
+    color: #0D4078;
+    -webkit-box-shadow: white 0 0 1px inset, hsla(0, 0%, 100%, 0.2) 0 1px 0 inset;
+    background-color: #6ab2e1;
+}
+.connection-info button.primary:active {
+    background-color: #2885C3;
+    border-color: #2C6FAA;
+    -webkit-box-shadow: hsla(0, 0%, 0%, 0.5) 0px 1px 2px inset;
+}
