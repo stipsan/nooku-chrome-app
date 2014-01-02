@@ -7,8 +7,6 @@
 * @link        http://www.nooku.org
 */
 
-Loader.load('view.default');
-
 this.ViewConnectionDefault = new Class({
 
 	Extends: ViewDefault

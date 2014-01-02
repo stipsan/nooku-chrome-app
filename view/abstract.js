@@ -58,6 +58,7 @@ this.ViewAbstract = new Class({
 			path = Titanium.Filesystem.getFile(absolute).parent(),
 			tmpl = path+'/'+this.getLayout()+'.html';
 
+
 		return Titanium.Filesystem.getFile(tmpl).read().toString();
 
 	}

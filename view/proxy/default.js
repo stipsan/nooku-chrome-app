@@ -7,8 +7,6 @@
 * @link        http://www.nooku.org
 */
 
-Loader.load('view.default');
-
 this.ViewProxyDefault = new Class({
 
 	Extends: ViewDefault

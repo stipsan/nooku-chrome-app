@@ -16,18 +16,18 @@ this.ModelConnections = new Class({
 	initialize: function(options){
 
 		var install = 'CREATE TABLE IF NOT EXISTS connections (id INT, url TEXT, title TEXT, username TEXT, password TEXT)';
-		this.db.execute(install);
+		//this.db.execute(install);
 
 		if(!this.getTotal()) {
-			this.db.execute('DROP TABLE connections');
-			this.db.execute(install);
+			//this.db.execute('DROP TABLE connections');
+			//this.db.execute(install);
 		}
 		
 		return this.parent(options);
 	
 	},
 	
-	db: Titanium.Database.open('nooku_desktop'),
+	//db: Titanium.Database.open('nooku_desktop'),
 	_id: false,
 	_list: [],
 	_item: {},
@@ -41,13 +41,15 @@ this.ModelConnections = new Class({
 	getTotal: function(){
 
 		//return this.getList().length;
-		var total = this.db.execute('SELECT MAX(id) FROM connections').field(0).toInt();
+		//var total = this.db.execute('SELECT MAX(id) FROM connections').field(0).toInt();
+        return 1;
 		return isNaN(total) ? 0 : total;
 
 	},
 
 	getList: function(){
 
+        return [{id: 0, url: 'http://demo.nooku.org', title: 'Demo Nooku', username: 'admin@localhost.me', password: 'demo'}];
 		this._list = [];
 		var rows = this.db.execute("SELECT * FROM connections");
 		while(rows.isValidRow()){
@@ -74,7 +76,9 @@ this.ModelConnections = new Class({
 
 	getItem: function(){
 
+        return {id: 0, url: 'http://demo.nooku.org', title: 'Demo Nooku', username: 'admin@localhost.me', password: 'demo'};
 		this._item = {};
+
 		var rows = this.db.execute(
 		    "SELECT * FROM connections WHERE id = ? LIMIT 1",
 		    this._id.toInt()
@@ -107,6 +111,7 @@ this.ModelConnections = new Class({
 	
 	save: function(column, value){
 
+        return true;
 		if(!this._id) return false;
 
 		this.db.execute(
@@ -122,6 +127,8 @@ this.ModelConnections = new Class({
 	
 	remove: function(){
 
+        return true;
+
 		if(!this._id) return false;
 
 		this.db.execute(
@@ -136,6 +143,8 @@ this.ModelConnections = new Class({
 	},
 	
 	updateTable: function(step) {
+        return true;
+
 		if(this._ranUpdateTable) return;
 
 		switch(step) {

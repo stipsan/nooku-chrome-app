@@ -24,6 +24,20 @@ head.js(
     'koowa/loader.js',
     'koowa/factory.js',
     'koowa/identifiable.js',
+    'controller/abstract.js',
+    'controller/connection.js',
+    'controller/proxy.js',
+    'model/abstract.js',
+    'model/connections.js',
+    'model/menu.js',
+    'model/proxies.js',
+    'model/sites.js',
+    'view/abstract.js',
+    'view/default.js',
+    'view/connections/default.js',
+    'view/connection/default.js',
+    'view/proxy/default.js',
+    'application.js',
     function(){
         //@TODO Set the proxy
         //var proxy = Factory.get('model.proxies').getProxy();

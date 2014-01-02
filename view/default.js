@@ -7,8 +7,6 @@
 * @link        http://www.nooku.org
 */
 
-Loader.load('view.abstract');
-
 this.ViewDefault = new Class({
 
 	Extends: ViewAbstract
