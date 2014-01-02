@@ -19,7 +19,6 @@
     "alarms",
       "clipboardRead",
       "clipboardWrite",
-      "experimental",
       "contextMenus",
       "cookies",
       "identity",
@@ -27,6 +26,5 @@
       "proxy",
       "webRequest",
       "webNavigation"
-  ],
-  "fileSystem": ["write", "retainEntries", "directory"]
+  ]
 }
