@@ -14,9 +14,7 @@ var Factory = {
 	get: function(){
 
         var config = Array.from(arguments).link({
-            identifier: function(identifier){
-                return Type.isString(identifier) || identifier.isPrototypeOf(Identifier);
-            },
+            identifier: Type.isString,
             options: Type.isObject,
             callback: Type.isFunction
         });
@@ -24,7 +22,7 @@ var Factory = {
         console.dir(config);
         if(!config.callback) throw new TypeError('Factory calls require a callback!');
 
-		var identifier = new Identifier(config.identifier),
+		var identifier = config.identifier,
 		    options = config.options || {},
 		    callback = config.callback || false;
 		    
@@ -33,53 +31,33 @@ var Factory = {
 		
 		
 		//Get object from object cache if exists
-		if(this._registry.hasOwnProperty(identifier)) return config.callback(this._registry[identifier]);
+		if(!this._registry.hasOwnProperty(identifier)) {
+            //Get classname
+            var className = this._getClassNameFromIdentifier(identifier);
 
-        var self = this, returns = function(){
-            var innerReturns = function(){
-                //Get classname
-                var className = self._getClassNameFromIdentifier(identifier);
+            //Check if class exists
+            if(className in window == false) throw new TypeError(className+' not found');
 
-                //Check if class exists
-                if(className in window == false) console.error(className+' not found');
+            //Instantiate class
+            //console.log('before new window[%s]', className, new Date);
+            var obj = new window[className](options);
+            //console.log('new %s', className, options);
 
-                //Instantiate class
-                //console.log('before new window[%s]', className, new Date);
-                var obj = new window[className](options);
-                //console.log('new %s', className, options);
+            //Cache object
+            this._registry[identifier] = obj;
+        }
 
-                //Cache object
-                self._registry[identifier] = obj;
-            };
-            //console.log('before Loader(%s)', identifier, new Date);
-            //If the object don't exist, or have the name 'default', get the default object
-            Loader.load(identifier, innerReturns);
-            //console.log('after Loader(%s)', identifier, new Date);
-        };
 
-		//*autoload* the abstract class
-		var abstract	= Object.clone(identifier);
-		abstract.name	= 'abstract';
-		try {
-			Loader.load(abstract, returns);
-		} catch(error) {
-			returns();
-		}
-	},
-
-	tmp: function(){
-
-		
-
+        return config.callback(this._registry[identifier]);
 	},
 
 	_getClassNameFromIdentifier: function(identifier){
 
-		var path = identifier.path.map(function(part){
+		var parts = identifier.split('.').map(function(part){
 			return part.capitalize();
 		});
 		
-		return path.join('')+identifier.name.capitalize()
+		return parts.join('')
 
 	}
 
