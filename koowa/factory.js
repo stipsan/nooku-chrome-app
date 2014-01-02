@@ -22,6 +22,7 @@ var Factory = {
         });
         
         console.dir(config);
+        if(!config.callback) throw new TypeError('Factory calls require a callback!');
 
 		var identifier = new Identifier(config.identifier),
 		    options = config.options || {},

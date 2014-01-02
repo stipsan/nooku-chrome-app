@@ -16,14 +16,10 @@ var Loader = {
 		var identifier = new Identifier(identifier);
 		if(this._registry.hasOwnProperty(identifier)) return true;
 
-		var path = this.path(identifier), 
-			absolute = Titanium.App.appURLToPath(path),
-			file = Titanium.Filesystem.getFile(absolute);
+		var path = this.path(identifier);
+			//absolute = Titanium.App.appURLToPath(path);
 
-		if(!file.exists) return false;
-
-		//Virtual require_once, using new Function instead of eval in order to run it in the global scope
-		callback ? head.js(file.toString(), callback) : new Function(file.read().toString())();
+		callback ? head.js(path, callback) : head.js(path);
 
 		return true;
 	},
@@ -32,9 +28,9 @@ var Loader = {
 
 		var identifier = new Identifier(identifier);
 		if(this._registry.hasOwnProperty(identifier)) return this._registry[identifier];
-
+return identifier.path.join('/')+'/'+identifier.name+'.js';
 		path = ['app://'+Titanium.App.getID(), identifier.path.join('/'), identifier.name+'.js'].join('/');
-
+alert(path);
 		this._registry[identifier] = path;
 
 		return path;

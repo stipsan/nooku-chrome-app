@@ -29,47 +29,51 @@ head.js(
         //var proxy = Factory.get('model.proxies').getProxy();
         //Titanium.Network.setHTTPProxy(proxy);
 
-        var app = Factory.get('application');
-        if(app.options.request.view == 'connections')
-        {
-            //Back
-            app.options.request.layout = 'form';
-            $('view').getElement('.back').grab(app.dispatch());
-            //Back
-            app.options.request.layout = 'default';
-            $('view').getElement('.front').grab(app.dispatch());
-        } else {
-            $('view').getElement('.front').grab(app.dispatch());
-        }
-
-        /*
-         Titanium.addEventListener(Titanium.ALL, function(event){
-         console.group(event.getType());
-         console.log('Titanium.ALL', new Date, this, event.getType());
-         console.groupEnd();
-         });
-         //*/
-        Titanium.addEventListener(Titanium.HTTP_STATE_CHANGED, function(){
-            document.body.addClass('loading');
-        });
-        Titanium.addEventListener(Titanium.HTTP_DONE, function(){
-            document.body.removeClass('loading');
-        });
-        window.addEventListener('focus', Factory.get('model.menu').setMenu);
-
-
-        //@TODO This stuff is for testing and developing multi-site
-        var secret = new Keyboard({
-            events: {
-                'alt+m': function(){
-                    var secrets = ['Default', 'Store', 'Demo', 'Support'], menu = Factory.get('model.menu');
-
-                    document.body.addClass('multisite');
-                    menu.setMenu();
-                }
+        var app = Factory.get('application', function(){
+            if(app.options.request.view == 'connections')
+            {
+                //Back
+                app.options.request.layout = 'form';
+                $('view').getElement('.back').grab(app.dispatch());
+                //Back
+                app.options.request.layout = 'default';
+                $('view').getElement('.front').grab(app.dispatch());
+            } else {
+                $('view').getElement('.front').grab(app.dispatch());
             }
+
+            /*
+             Titanium.addEventListener(Titanium.ALL, function(event){
+             console.group(event.getType());
+             console.log('Titanium.ALL', new Date, this, event.getType());
+             console.groupEnd();
+             });
+             //*/
+            /* @TODO refactor out titanium
+             Titanium.addEventListener(Titanium.HTTP_STATE_CHANGED, function(){
+             document.body.addClass('loading');
+             });
+             Titanium.addEventListener(Titanium.HTTP_DONE, function(){
+             document.body.removeClass('loading');
+             });
+             window.addEventListener('focus', Factory.get('model.menu').setMenu);
+             */
+
+
+            /* @TODO This stuff is for testing and developing multi-site
+            var secret = new Keyboard({
+                events: {
+                    'alt+m': function(){
+                        var secrets = ['Default', 'Store', 'Demo', 'Support'], menu = Factory.get('model.menu');
+
+                        document.body.addClass('multisite');
+                        menu.setMenu();
+                    }
+                }
+            });
+            secret.activate();
+            */
         });
-        secret.activate();
     }
 );
 
@@ -78,7 +82,7 @@ head.js(
     var listening = false, prevEvent, drag = function(event){
         if(!prevEvent) prevEvent = event;
         var win = Titanium.UI.getCurrentWindow();
-        
+
          //win.setX(win.getX() + (event.screenX - prevEvent.screenX));
          //win.setY(win.getY() + (event.screenY - prevEvent.screenY));
 
