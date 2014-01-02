@@ -13,13 +13,15 @@ var Loader = {
 
 	load: function(identifier, callback){
 
+        if(!callback) throw new TypeError('Loader.load('+identifier+') call require a callback!');
+
 		var identifier = new Identifier(identifier);
-		if(this._registry.hasOwnProperty(identifier)) return true;
+		if(this._registry.hasOwnProperty(identifier)) return callback();
 
 		var path = this.path(identifier);
 			//absolute = Titanium.App.appURLToPath(path);
 
-		callback ? head.js(path, callback) : head.js(path);
+		head.js(path, callback);
 
 		return true;
 	},
