@@ -1,3 +1,58 @@
+angular.module('app', ['ngRoute'])
+
+.config(function($routeProvider) {
+    $routeProvider
+        .when('/', {
+            controller:'ListController',
+            templateUrl:'list.html'
+        })
+        .when('/edit/:connectionId', {
+            controller:'EditController',
+            templateUrl:'detail.html'
+        })
+        .when('/new', {
+            controller:'CreateController',
+            templateUrl:'detail.html'
+        })
+        .otherwise({
+            redirectTo:'/'
+        });
+})
+
+.controller('ListController', function($scope) {
+    $scope.connections = [{id: 0, url: 'http://demo.nooku.org', title: 'Demo Nooku', username: 'admin@localhost.me', password: 'demo'}];
+})
+
+.controller('CreateController', function($scope, $location, $timeout) {
+    $scope.save = function(){
+    $timeout(function() { $location.path('/'); });
+    /*
+        Projects.$add($scope.project, function() {
+            $timeout(function() { $location.path('/'); });
+        });
+    //*/
+    };
+})
+
+.controller('EditController', function($scope, $location, $routeParams, $firebase, fbURL) {
+    $scope.connection = {id: 0, url: 'http://demo.nooku.org', title: 'Demo Nooku', username: 'admin@localhost.me', password: 'demo'};
+
+    $scope.destroy = function() {
+        //$scope.project.$remove();
+        $location.path('/');
+    };
+
+    $scope.save = function() {
+        //$scope.project.$save();
+        $location.path('/');
+    };
+});
+
+
+
+
+return;
+
 window.addEventListener('load', function(){
     //Fixing flash of unstyled content
     document.body.style.opacity = 1;
