@@ -2,9 +2,56 @@
 <html data-ng-app="app">
 <head>
     <script src="angular.min.js"></script>
+    <script src="angular-route.min.js"></script>
     <script src="app.js"></script>
 </head>
 <body>
-    <div data-ng-view></div>
+<table>
+    <thead>
+    <tr>
+        <th>Project</th>
+        <th>Description</th>
+        <th><a href="#/new"><i class="icon-plus-sign"></i></a></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="connection in connections">
+        <td><a href="#/edit/{{project.$id}}" target="_blank">{{connection.title}}</a></td>
+        <td>{{connection.username}}</td>
+        <td>
+            <a href="#/edit/{{project.$id}}"><i class="icon-pencil"></i></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<section id="content">
+    <div class="wrap">
+        <section class="connection-info">
+            <div>
+                <!--<label for="title">Title</label>-->
+                <input type="text" id="title" name="title" placeholder="Untitled Connection">
+            </div>
+            <div>
+                <label for="url">Server</label>
+                <input type="url" id="url" name="url" placeholder="http://domain.com/administrator">
+            </div>
+            <h3>Optional:</h3>
+            <div>
+                <label for="username">Username or E-Mail</label>
+                <input type="text" id="username" name="username">
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div class="toolbar">
+                <button id="cancel">Cancel</button>
+                <button id="save" class="primary">Save</button>
+            </div>
+        </section>
+    </div>
+    <iframe frameborder="0" width="100%" height="100%"></iframe>
+</section>
 </body>
 </html>
