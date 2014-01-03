@@ -49,7 +49,7 @@ this.ModelConnections = new Class({
 
 	getList: function(){
 
-        return [{id: 0, url: 'http://demo.nooku.org', title: 'Demo Nooku', username: 'admin@localhost.me', password: 'demo'}];
+        return [{id: 0, url: 'http://demo.nooku.org', title: 'Demo Nooku', username: 'admin@localhost.home', password: 'demo'}];
 		this._list = [];
 		var rows = this.db.execute("SELECT * FROM connections");
 		while(rows.isValidRow()){
@@ -76,7 +76,7 @@ this.ModelConnections = new Class({
 
 	getItem: function(){
 
-        return {id: 0, url: 'http://demo.nooku.org', title: 'Demo Nooku', username: 'admin@localhost.me', password: 'demo'};
+        return {id: 0, url: 'http://demo.nooku.org', title: 'Demo Nooku', username: 'admin@localhost.home', password: 'demo'};
 		this._item = {};
 
 		var rows = this.db.execute(
