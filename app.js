@@ -34,7 +34,7 @@ angular.module('app', ['ngRoute'])
     };
 })
 
-.controller('EditController', function($scope, $location, $routeParams, $firebase, fbURL) {
+.controller('EditController', function($scope, $location, $routeParams) {
     $scope.connection = {id: 0, url: 'http://demo.nooku.org', title: 'Demo Nooku', username: 'admin@localhost.me', password: 'demo'};
 
     $scope.destroy = function() {
