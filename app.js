@@ -51,7 +51,7 @@ angular.module('app', ['ngRoute'])
 
 
 
-return;
+(function(){
 
 window.addEventListener('load', function(){
     //Fixing flash of unstyled content
@@ -189,3 +189,4 @@ head.js(
     }, 10000);
    */
 })();
+});
